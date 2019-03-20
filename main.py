@@ -8,6 +8,7 @@ import random
 import math
 
 from dronelib import Drone
+from astar import astar
 import util
 
 from ascend_msgs.srv import GlobalMap
@@ -69,6 +70,12 @@ def main():
     target_x = 0
     target_y = 0
 
+    # Get targets
+    start = (0, 0)
+    goal = (10, 19)
+    targets = astar(world_map, start, goal)
+
+    print(targets)
     rate = rospy.Rate(30)
     while not rospy.is_shutdown():
         rate.sleep()
