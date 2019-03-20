@@ -6,6 +6,7 @@ import rospy
 
 import random
 import math
+import numpy
 
 from dronelib import Drone
 from astar import astar
@@ -70,10 +71,12 @@ def main():
     target_x = 0
     target_y = 0
 
+
+
     # Get targets
     start = (0, 0)
     goal = (10, 19)
-    targets = astar(world_map, start, goal)
+    targets = astar(numpy.array(world_map), start, goal)
 
     print(targets)
     rate = rospy.Rate(30)
