@@ -5,6 +5,18 @@
 import numpy as np
 from heapq import *
 
+
+def split_cells(grid, n=2):
+    new_map = []
+    for row in range(np.size(m, 0)):
+        temp = np.repeat(np.array(m[row]), n)
+        for i in range(n):
+            new_map.append(temp)
+
+    x = grid.shape[0] * n
+    y = grid.shape[1] * n
+    return np.reshape(np.array(new_map), (x,y))
+
 def dist(A, B):
     return ((B[0] - A[0])**2 + (B[1] - A[1])**2)**0.5
 
