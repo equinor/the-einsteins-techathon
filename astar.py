@@ -8,14 +8,24 @@ from heapq import *
 
 def split_cells(grid, n=2):
     new_map = []
-    for row in range(np.size(m, 0)):
-        temp = np.repeat(np.array(m[row]), n)
+    for row in range(np.size(grid, 0)):
+        temp = np.repeat(np.array(grid[row]), n)
         for i in range(n):
             new_map.append(temp)
 
     x = grid.shape[0] * n
     y = grid.shape[1] * n
     return np.reshape(np.array(new_map), (x,y))
+
+def merge_cells(targets, n=2.0):
+    new_targets = []
+    for i in range(1, len(targets) - 1, n/2):
+        x = targets[i][0] / float((n))
+        y = targets[i][1] / float((n))
+
+        new_targets.append((x, y))
+
+    return new_targets
 
 def dist(A, B):
     return ((B[0] - A[0])**2 + (B[1] - A[1])**2)**0.5
