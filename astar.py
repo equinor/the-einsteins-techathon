@@ -55,24 +55,36 @@ def remove_points(points=None):
     targets.append(wmap[-1])
     return targets
 
-def heuristic(a, b):
-    # Weights
-    w1 = 1
-    w2 = 2
+def heuristic(a, b, previous, neighbor_direction):
+    if previous:
+        previous_x = previous[0]
+        previous_y = previous[1]
 
-    dist = (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
-    direction = 1
+    current_x = a[0]
+    current_y = a[1]
 
-    return w1 * dist + w2 * direction
+    neighbor_x = b[0]
+    neighbor_y = b[0]
+
+    dist = (neighbor_x - current_x) ** 2 + (neighbor_y - current_y) ** 2
+    
+    penalty = 0
+    if previous and neighbor_direction:
+        direction = (current_x - previous_x, current_y - previous_y) 
+        if direction != neighbor_direction:
+            penalty = 1
+
+    return dist + penalty
 
 def astar(array, start, goal):
 
     neighbors = [(0,1),(0,-1),(1,0),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)]
 
+    previous = (0, 0)
     close_set = set()
     came_from = {}
     gscore = {start:0}
-    fscore = {start:heuristic(start, goal)}
+    fscore = {start:heuristic(start, goal, None, None)}
     oheap = []
 
     heappush(oheap, (fscore[start], start))
@@ -89,9 +101,11 @@ def astar(array, start, goal):
             return data
 
         close_set.add(current)
+        
         for i, j in neighbors:
             neighbor = current[0] + i, current[1] + j
-            tentative_g_score = gscore[current] + heuristic(current, neighbor)
+            neighbor_direction = (i, j)
+            tentative_g_score = gscore[current] + heuristic(current, neighbor, previous, neighbor_direction)           
             if 0 <= neighbor[0] < array.shape[0]:
                 if 0 <= neighbor[1] < array.shape[1]:
                     if array[neighbor[0]][neighbor[1]] == 1:
@@ -109,8 +123,10 @@ def astar(array, start, goal):
             if  tentative_g_score < gscore.get(neighbor, 0) or neighbor not in [i[1]for i in oheap]:
                 came_from[neighbor] = current
                 gscore[neighbor] = tentative_g_score
-                fscore[neighbor] = tentative_g_score + heuristic(neighbor, goal)
+                fscore[neighbor] = tentative_g_score + heuristic(neighbor, goal, None, None)
                 heappush(oheap, (fscore[neighbor], neighbor))
+        
+        previous = current
 
     return False
 
